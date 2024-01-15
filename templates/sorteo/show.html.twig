@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SORTEO{% endblock %}
+
+{% block body %}
+    <h1>SORTEO</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ s_o_r_t_e_o.id }}</td>
+            </tr>
+            <tr>
+                <th>Nombre</th>
+                <td>{{ s_o_r_t_e_o.nombre }}</td>
+            </tr>
+            <tr>
+                <th>Fecha_inicio</th>
+                <td>{{ s_o_r_t_e_o.fechaInicio ? s_o_r_t_e_o.fechaInicio|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Fecha_fin</th>
+                <td>{{ s_o_r_t_e_o.fechaFin ? s_o_r_t_e_o.fechaFin|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Precio_ticket</th>
+                <td>{{ s_o_r_t_e_o.precioTicket }}</td>
+            </tr>
+            <tr>
+                <th>Ticket_totales</th>
+                <td>{{ s_o_r_t_e_o.ticketTotales }}</td>
+            </tr>
+            <tr>
+                <th>Premio</th>
+                <td>{{ s_o_r_t_e_o.premio }}</td>
+            </tr>
+            <tr>
+                <th>Numero_premiado</th>
+                <td>{{ s_o_r_t_e_o.numeroPremiado }}</td>
+            </tr>
+            <tr>
+                <th>Id_ganador</th>
+                <td>{{ s_o_r_t_e_o.idGanador }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_s_o_r_t_e_o_index') }}">back to list</a>
+
+    <a href="{{ path('app_s_o_r_t_e_o_edit', {'id': s_o_r_t_e_o.id}) }}">edit</a>
+
+    {{ include('sorteo/_delete_form.html.twig') }}
+{% endblock %}
