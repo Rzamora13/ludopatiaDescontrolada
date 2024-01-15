@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\SORTEORepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -37,6 +39,14 @@ class SORTEO
 
     #[ORM\Column(nullable: true)]
     private ?int $id_ganador = null;
+
+    #[ORM\OneToMany(mappedBy: 'sorteo', targetEntity: TICKET::class)]
+    private Collection $ticket;
+
+    public function __construct()
+    {
+        $this->ticket = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -135,6 +145,36 @@ class SORTEO
     public function setIdGanador(?int $id_ganador): static
     {
         $this->id_ganador = $id_ganador;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TICKET>
+     */
+    public function getTicket(): Collection
+    {
+        return $this->ticket;
+    }
+
+    public function addTicket(TICKET $ticket): static
+    {
+        if (!$this->ticket->contains($ticket)) {
+            $this->ticket->add($ticket);
+            $ticket->setSorteo($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTicket(TICKET $ticket): static
+    {
+        if ($this->ticket->removeElement($ticket)) {
+            // set the owning side to null (unless already changed)
+            if ($ticket->getSorteo() === $this) {
+                $ticket->setSorteo(null);
+            }
+        }
 
         return $this;
     }

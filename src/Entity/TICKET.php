@@ -19,6 +19,12 @@ class TICKET
     #[ORM\Column]
     private ?int $estado = null;
 
+    #[ORM\ManyToOne(inversedBy: 'ticket')]
+    private ?SORTEO $sorteo = null;
+
+    #[ORM\ManyToOne(inversedBy: 'ticket')]
+    private ?User $user = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -44,6 +50,30 @@ class TICKET
     public function setEstado(int $estado): static
     {
         $this->estado = $estado;
+
+        return $this;
+    }
+
+    public function getSorteo(): ?SORTEO
+    {
+        return $this->sorteo;
+    }
+
+    public function setSorteo(?SORTEO $sorteo): static
+    {
+        $this->sorteo = $sorteo;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }
