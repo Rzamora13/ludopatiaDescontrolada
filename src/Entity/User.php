@@ -31,15 +31,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $saldo = null;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: TICKET::class)]
-    private Collection $ticket;
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Apuesta::class)]
+    private Collection $apuestas;
 
     public function __construct()
     {
-        $this->ticket = new ArrayCollection();
+        $this->apuestas = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -117,7 +117,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->saldo;
     }
 
-    public function setSaldo(int $saldo): static
+    public function setSaldo(?int $saldo): static
     {
         $this->saldo = $saldo;
 
@@ -125,32 +125,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, TICKET>
+     * @return Collection<int, Apuesta>
      */
-    public function getTicket(): Collection
+    public function getApuestas(): Collection
     {
-        return $this->ticket;
+        return $this->apuestas;
     }
 
-    public function addTicket(TICKET $ticket): static
+    public function addApuesta(Apuesta $apuesta): static
     {
-        if (!$this->ticket->contains($ticket)) {
-            $this->ticket->add($ticket);
-            $ticket->setUser($this);
+        if (!$this->apuestas->contains($apuesta)) {
+            $this->apuestas->add($apuesta);
+            $apuesta->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeTicket(TICKET $ticket): static
+    public function removeApuesta(Apuesta $apuesta): static
     {
-        if ($this->ticket->removeElement($ticket)) {
+        if ($this->apuestas->removeElement($apuesta)) {
             // set the owning side to null (unless already changed)
-            if ($ticket->getUser() === $this) {
-                $ticket->setUser(null);
+            if ($apuesta->getUser() === $this) {
+                $apuesta->setUser(null);
             }
         }
 
         return $this;
     }
+
 }

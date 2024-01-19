@@ -1,37 +1,35 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}TICKET index{% endblock %}
+{% block title %}Ticket index{% endblock %}
 
 {% block body %}
-    <h1>TICKET index</h1>
+    <h1>Ticket index</h1>
 
     <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
                 <th>Numero</th>
-                <th>Estado</th>
                 <th>actions</th>
             </tr>
         </thead>
         <tbody>
-        {% for t_i_c_k_e_t in t_i_c_k_e_ts %}
+        {% for ticket in tickets %}
             <tr>
-                <td>{{ t_i_c_k_e_t.id }}</td>
-                <td>{{ t_i_c_k_e_t.numero }}</td>
-                <td>{{ t_i_c_k_e_t.estado }}</td>
+                <td>{{ ticket.id }}</td>
+                <td>{{ ticket.numero }}</td>
                 <td>
-                    <a href="{{ path('app_t_i_c_k_e_t_show', {'id': t_i_c_k_e_t.id}) }}">show</a>
-                    <a href="{{ path('app_t_i_c_k_e_t_edit', {'id': t_i_c_k_e_t.id}) }}">edit</a>
+                    <a href="{{ path('app_ticket_show', {'id': ticket.id}) }}">show</a>
+                    <a href="{{ path('app_ticket_edit', {'id': ticket.id}) }}">edit</a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="4">no records found</td>
+                <td colspan="3">no records found</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('app_t_i_c_k_e_t_new') }}">Create new</a>
+    <a href="{{ path('app_ticket_new') }}">Create new</a>
 {% endblock %}

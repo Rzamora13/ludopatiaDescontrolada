@@ -2,14 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\SORTEORepository;
+use App\Repository\SorteoRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: SORTEORepository::class)]
-class SORTEO
+#[ORM\Entity(repositoryClass: SorteoRepository::class)]
+class Sorteo
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -17,7 +17,7 @@ class SORTEO
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $nombre = null;
+    private ?string $name = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $fecha_inicio = null;
@@ -29,23 +29,24 @@ class SORTEO
     private ?int $precio_ticket = null;
 
     #[ORM\Column]
-    private ?int $ticket_totales = null;
+    private ?int $tickets_totales = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $numero_ganador = null;
+
+    #[ORM\ManyToMany(targetEntity: Ticket::class, inversedBy: 'sorteos')]
+    private Collection $ticket;
+
+    #[ORM\OneToMany(mappedBy: 'sorteo', targetEntity: Apuesta::class)]
+    private Collection $apuestas;
 
     #[ORM\Column(length: 255)]
     private ?string $premio = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $numero_premiado = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?int $id_ganador = null;
-
-    #[ORM\OneToMany(mappedBy: 'sorteo', targetEntity: TICKET::class)]
-    private Collection $ticket;
-
     public function __construct()
     {
         $this->ticket = new ArrayCollection();
+        $this->apuestas = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -53,14 +54,14 @@ class SORTEO
         return $this->id;
     }
 
-    public function getNombre(): ?string
+    public function getName(): ?string
     {
-        return $this->nombre;
+        return $this->name;
     }
 
-    public function setNombre(string $nombre): static
+    public function setName(string $name): static
     {
-        $this->nombre = $nombre;
+        $this->name = $name;
 
         return $this;
     }
@@ -101,14 +102,88 @@ class SORTEO
         return $this;
     }
 
-    public function getTicketTotales(): ?int
+    public function getTicketsTotales(): ?int
     {
-        return $this->ticket_totales;
+        return $this->tickets_totales;
     }
 
-    public function setTicketTotales(int $ticket_totales): static
+    public function setTicketsTotales(int $tickets_totales): static
     {
-        $this->ticket_totales = $ticket_totales;
+        $this->tickets_totales = $tickets_totales;
+
+        return $this;
+    }
+
+    public function getNumeroGanador(): ?int
+    {
+        return $this->numero_ganador;
+    }
+
+    public function setNumeroGanador(?int $numero_ganador): static
+    {
+        $this->numero_ganador = $numero_ganador;
+
+        return $this;
+    }
+
+    public function generarNumeroGanador()
+    {
+        
+        $numeroGanador = rand(1, $this->tickets_totales);
+
+        $this->numero_ganador = $numeroGanador;
+    }
+
+    /**
+     * @return Collection<int, Ticket>
+     */
+    public function getTicket(): Collection
+    {
+        return $this->ticket;
+    }
+
+    public function addTicket(Ticket $ticket): static
+    {
+        if (!$this->ticket->contains($ticket)) {
+            $this->ticket->add($ticket);
+        }
+
+        return $this;
+    }
+
+    public function removeTicket(Ticket $ticket): static
+    {
+        $this->ticket->removeElement($ticket);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Apuesta>
+     */
+    public function getApuestas(): Collection
+    {
+        return $this->apuestas;
+    }
+
+    public function addApuesta(Apuesta $apuesta): static
+    {
+        if (!$this->apuestas->contains($apuesta)) {
+            $this->apuestas->add($apuesta);
+            $apuesta->setSorteo($this);
+        }
+
+        return $this;
+    }
+
+    public function removeApuesta(Apuesta $apuesta): static
+    {
+        if ($this->apuestas->removeElement($apuesta)) {
+            // set the owning side to null (unless already changed)
+            if ($apuesta->getSorteo() === $this) {
+                $apuesta->setSorteo(null);
+            }
+        }
 
         return $this;
     }
@@ -121,60 +196,6 @@ class SORTEO
     public function setPremio(string $premio): static
     {
         $this->premio = $premio;
-
-        return $this;
-    }
-
-    public function getNumeroPremiado(): ?int
-    {
-        return $this->numero_premiado;
-    }
-
-    public function setNumeroPremiado(?int $numero_premiado): static
-    {
-        $this->numero_premiado = $numero_premiado;
-
-        return $this;
-    }
-
-    public function getIdGanador(): ?int
-    {
-        return $this->id_ganador;
-    }
-
-    public function setIdGanador(?int $id_ganador): static
-    {
-        $this->id_ganador = $id_ganador;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, TICKET>
-     */
-    public function getTicket(): Collection
-    {
-        return $this->ticket;
-    }
-
-    public function addTicket(TICKET $ticket): static
-    {
-        if (!$this->ticket->contains($ticket)) {
-            $this->ticket->add($ticket);
-            $ticket->setSorteo($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTicket(TICKET $ticket): static
-    {
-        if ($this->ticket->removeElement($ticket)) {
-            // set the owning side to null (unless already changed)
-            if ($ticket->getSorteo() === $this) {
-                $ticket->setSorteo(null);
-            }
-        }
 
         return $this;
     }

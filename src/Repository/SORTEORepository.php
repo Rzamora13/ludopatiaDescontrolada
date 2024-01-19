@@ -2,27 +2,27 @@
 
 namespace App\Repository;
 
-use App\Entity\SORTEO;
+use App\Entity\Sorteo;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<SORTEO>
+ * @extends ServiceEntityRepository<Sorteo>
  *
- * @method SORTEO|null find($id, $lockMode = null, $lockVersion = null)
- * @method SORTEO|null findOneBy(array $criteria, array $orderBy = null)
- * @method SORTEO[]    findAll()
- * @method SORTEO[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Sorteo|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Sorteo|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Sorteo[]    findAll()
+ * @method Sorteo[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class SORTEORepository extends ServiceEntityRepository
+class SorteoRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, SORTEO::class);
+        parent::__construct($registry, Sorteo::class);
     }
 
 //    /**
-//     * @return SORTEO[] Returns an array of SORTEO objects
+//     * @return Sorteo[] Returns an array of Sorteo objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -36,7 +36,7 @@ class SORTEORepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?SORTEO
+//    public function findOneBySomeField($value): ?Sorteo
 //    {
 //        return $this->createQueryBuilder('s')
 //            ->andWhere('s.exampleField = :val')

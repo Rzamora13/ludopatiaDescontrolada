@@ -1,49 +1,56 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}SORTEO index{% endblock %}
+{% block title %}Sorteo index
+{% endblock %}
 
 {% block body %}
-    <h1>SORTEO index</h1>
+	<h1>Todos los sorteos</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nombre</th>
-                <th>Fecha_inicio</th>
-                <th>Fecha_fin</th>
-                <th>Precio_ticket</th>
-                <th>Ticket_totales</th>
-                <th>Premio</th>
-                <th>Numero_premiado</th>
-                <th>Id_ganador</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for s_o_r_t_e_o in s_o_r_t_e_os %}
-            <tr>
-                <td>{{ s_o_r_t_e_o.id }}</td>
-                <td>{{ s_o_r_t_e_o.nombre }}</td>
-                <td>{{ s_o_r_t_e_o.fechaInicio ? s_o_r_t_e_o.fechaInicio|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ s_o_r_t_e_o.fechaFin ? s_o_r_t_e_o.fechaFin|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ s_o_r_t_e_o.precioTicket }}</td>
-                <td>{{ s_o_r_t_e_o.ticketTotales }}</td>
-                <td>{{ s_o_r_t_e_o.premio }}</td>
-                <td>{{ s_o_r_t_e_o.numeroPremiado }}</td>
-                <td>{{ s_o_r_t_e_o.idGanador }}</td>
-                <td>
-                    <a href="{{ path('app_s_o_r_t_e_o_show', {'id': s_o_r_t_e_o.id}) }}">show</a>
-                    <a href="{{ path('app_s_o_r_t_e_o_edit', {'id': s_o_r_t_e_o.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="10">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+	<table class="table">
+		<thead>
+			<tr>
 
-    <a href="{{ path('app_s_o_r_t_e_o_new') }}">Create new</a>
+				<th>Name</th>
+				<th>Fecha_inicio</th>
+				<th>Fecha_fin</th>
+				<th>Precio_ticket</th>
+				<th>Tickets_totales</th>
+				<th>Premios</th>
+				<th>Numero_ganador</th>
+
+				<th>actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for sorteo in sorteos %}
+				<tr>
+
+					<td>{{ sorteo.name }}</td>
+					<td>{{ sorteo.fechaInicio ? sorteo.fechaInicio|date('Y-m-d H:i:s') : '' }}</td>
+					<td>{{ sorteo.fechaFin ? sorteo.fechaFin|date('Y-m-d H:i:s') : '' }}</td>
+					<td>{{ sorteo.precioTicket }}</td>
+					<td>{{ sorteo.ticketsTotales }}</td>
+					<td>{{ sorteo.premio }}</td>
+					<td>{{ sorteo.numeroGanador }}</td>
+
+					<td>
+						{% if is_granted("ROLE_ADMIN") %}
+							<a href="{{ path('app_sorteo_show', {'id': sorteo.id}) }}">show</a>
+							<a href="{{ path('app_sorteo_edit', {'id': sorteo.id}) }}">edit</a>
+						{% endif %}
+						<a href="{{ path('app_ticket_index', {'id': sorteo.id}) }}">Comprar ticket</a>
+					</td>
+
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="8">no records found</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+	{% if is_granted("ROLE_ADMIN") %}
+		<a href="{{ path('app_sorteo_new') }}">Create new</a>
+	{% endif %}
 {% endblock %}

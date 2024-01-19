@@ -2,11 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\TICKETRepository;
+use App\Repository\TicketRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: TICKETRepository::class)]
-class TICKET
+#[ORM\Entity(repositoryClass: TicketRepository::class)]
+class Ticket
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -16,14 +18,17 @@ class TICKET
     #[ORM\Column]
     private ?int $numero = null;
 
-    #[ORM\Column]
-    private ?int $estado = null;
+    #[ORM\ManyToMany(targetEntity: Sorteo::class, mappedBy: 'ticket')]
+    private Collection $sorteos;
 
-    #[ORM\ManyToOne(inversedBy: 'ticket')]
-    private ?SORTEO $sorteo = null;
+    #[ORM\OneToMany(mappedBy: 'ticket', targetEntity: Apuesta::class)]
+    private Collection $apuestas;
 
-    #[ORM\ManyToOne(inversedBy: 'ticket')]
-    private ?User $user = null;
+    public function __construct()
+    {
+        $this->sorteos = new ArrayCollection();
+        $this->apuestas = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -42,39 +47,61 @@ class TICKET
         return $this;
     }
 
-    public function getEstado(): ?int
+    /**
+     * @return Collection<int, Sorteo>
+     */
+    public function getSorteos(): Collection
     {
-        return $this->estado;
+        return $this->sorteos;
     }
 
-    public function setEstado(int $estado): static
+    public function addSorteo(Sorteo $sorteo): static
     {
-        $this->estado = $estado;
+        if (!$this->sorteos->contains($sorteo)) {
+            $this->sorteos->add($sorteo);
+            $sorteo->addTicket($this);
+        }
 
         return $this;
     }
 
-    public function getSorteo(): ?SORTEO
+    public function removeSorteo(Sorteo $sorteo): static
     {
-        return $this->sorteo;
-    }
-
-    public function setSorteo(?SORTEO $sorteo): static
-    {
-        $this->sorteo = $sorteo;
+        if ($this->sorteos->removeElement($sorteo)) {
+            $sorteo->removeTicket($this);
+        }
 
         return $this;
     }
 
-    public function getUser(): ?User
+    /**
+     * @return Collection<int, Apuesta>
+     */
+    public function getApuestas(): Collection
     {
-        return $this->user;
+        return $this->apuestas;
     }
 
-    public function setUser(?User $user): static
+    public function addApuesta(Apuesta $apuesta): static
     {
-        $this->user = $user;
+        if (!$this->apuestas->contains($apuesta)) {
+            $this->apuestas->add($apuesta);
+            $apuesta->setTicket($this);
+        }
 
         return $this;
     }
+
+    public function removeApuesta(Apuesta $apuesta): static
+    {
+        if ($this->apuestas->removeElement($apuesta)) {
+            // set the owning side to null (unless already changed)
+            if ($apuesta->getTicket() === $this) {
+                $apuesta->setTicket(null);
+            }
+        }
+
+        return $this;
+    }
+
 }

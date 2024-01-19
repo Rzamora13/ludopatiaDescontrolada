@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Sorteo
+{% endblock %}
+
+{% block body %}
+	<h1>Añadir Saldo</h1>
+
+	{{ include('user/_form.html.twig', {'button_label': 'Update'}) }}
+
+	<a href="{{ path('app_sorteo_index') }}">back to list</a>
+
+{% endblock %}

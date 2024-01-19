@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Add saldo
+{% endblock %}
+
+{% block body %}
+	<h1>Añade saldo a tu cuenta</h1>
+
+	{{ include('user/_form.html.twig') }}
+
+	<a href="{{ path('app_sorteo_index') }}">back to list</a>
+{% endblock %}
