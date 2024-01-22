@@ -14,12 +14,12 @@ class TicketType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('numero')
-            ->add('sorteos', EntityType::class, [
-                'class' => Sorteo::class,
-'choice_label' => 'id',
-'multiple' => true,
-            ])
+            // ->add('numero')
+//             ->add('sorteos', EntityType::class, [
+//                 'class' => Sorteo::class,
+// 'choice_label' => 'id',
+// 'multiple' => true,
+//             ])
         ;
     }
 

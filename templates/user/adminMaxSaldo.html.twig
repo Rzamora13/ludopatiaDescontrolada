@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	<h1>Usuarios con el saldo más alto</h1>
+
+	<ul>
+		{% for user in maxSaldoUsers %}
+			<li>{{ user.username }}
+				- Saldo:
+				{{ user.saldo }}</li>
+		{% endfor %}
+	</ul>
+{% endblock %}

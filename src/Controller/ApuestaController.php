@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Apuesta;
 use App\Form\ApuestaType;
 use App\Repository\ApuestaRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -77,5 +78,17 @@ class ApuestaController extends AbstractController
         }
 
         return $this->redirectToRoute('app_apuesta_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/admin/maxTotalApuestas', name: 'app_user_maxTotalApuestas', methods: ['GET', 'POST'])]
+    public function maxTotalApuestas(UserRepository $userRepository, ApuestaRepository $apuestaRepository, EntityManagerInterface $entityManager): Response
+    {
+        $idUser = $apuestaRepository->getMaxTotalApuestas();
+
+        $userMaxApuestas = $userRepository->findUsernameById($idUser);
+
+        return $this->render('apuesta/maxTotalApuestas.html.twig', [
+            'userMaxApuestas' => $userMaxApuestas,
+        ]);
     }
 }

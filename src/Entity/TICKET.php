@@ -18,15 +18,11 @@ class Ticket
     #[ORM\Column]
     private ?int $numero = null;
 
-    #[ORM\ManyToMany(targetEntity: Sorteo::class, mappedBy: 'ticket')]
-    private Collection $sorteos;
-
     #[ORM\OneToMany(mappedBy: 'ticket', targetEntity: Apuesta::class)]
     private Collection $apuestas;
 
     public function __construct()
     {
-        $this->sorteos = new ArrayCollection();
         $this->apuestas = new ArrayCollection();
     }
 
@@ -43,33 +39,6 @@ class Ticket
     public function setNumero(int $numero): static
     {
         $this->numero = $numero;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Sorteo>
-     */
-    public function getSorteos(): Collection
-    {
-        return $this->sorteos;
-    }
-
-    public function addSorteo(Sorteo $sorteo): static
-    {
-        if (!$this->sorteos->contains($sorteo)) {
-            $this->sorteos->add($sorteo);
-            $sorteo->addTicket($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSorteo(Sorteo $sorteo): static
-    {
-        if ($this->sorteos->removeElement($sorteo)) {
-            $sorteo->removeTicket($this);
-        }
 
         return $this;
     }

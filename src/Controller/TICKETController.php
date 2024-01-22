@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Sorteo;
 use App\Entity\Ticket;
 use App\Form\TicketType;
 use App\Repository\TicketRepository;
@@ -14,8 +15,8 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/ticket')]
 class TicketController extends AbstractController
 {
-    #[Route('/', name: 'app_ticket_index', methods: ['GET'])]
-    public function index(TicketRepository $ticketRepository): Response
+    #[Route('/{id}', name: 'app_ticket_index', methods: ['GET'])]
+    public function index(Sorteo $sorteo ,TicketRepository $ticketRepository): Response
     {
         return $this->render('ticket/index.html.twig', [
             'tickets' => $ticketRepository->findAll(),

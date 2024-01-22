@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	<h1>Usuario con la mayor cantidad de apuestas</h1>
+
+	{% if userMaxApuestas is not null %}
+		<p>El usuario :
+			<strong>{{ userMaxApuestas }}</strong>
+			, ha realizado la mayor cantidad de apuestas.</p>
+	{% else %}
+		<p>No hay usuarios con apuestas.</p>
+	{% endif %}
+{% endblock %}

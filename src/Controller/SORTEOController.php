@@ -2,11 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\Apuesta;
 use App\Entity\Sorteo;
+use App\Entity\Ticket;
 use App\Form\SorteoType;
+use App\Repository\ApuestaRepository;
 use App\Repository\SorteoRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -23,6 +27,18 @@ class SorteoController extends AbstractController
 
     }
 
+    #[Route('/comprar-ticket/{id}', name: 'app_sorteo_comprar-ticket', methods: ['GET'])]
+    public function ticketsAvailable(ApuestaRepository $apuestaRepository, Sorteo $sorteo): Response
+    {
+
+        $ticketsDisponibles = $apuestaRepository->getAvailableTickets($sorteo);
+
+        return $this->render('sorteo/buyTicket.html.twig', [
+            'ticketsDisponibles' => $ticketsDisponibles,
+        ]);
+
+    }
+
     #[Route('/new', name: 'app_sorteo_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -31,8 +47,29 @@ class SorteoController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $numeroTickets = $sorteo->getTicketsTotales();
+
+            // dd($numeroTickets);
+
+            for ($i=0; $i < $numeroTickets; $i++){
+                $apuesta = new Apuesta();
+                $ticket = new Ticket();
+                
+                $ticket->setNumero($i);
+
+                $apuesta -> setSorteo($sorteo);
+                $apuesta -> setTicket($ticket);
+
+
+                $entityManager->persist($apuesta);
+                $entityManager->persist($ticket);
+            }
+
             $entityManager->persist($sorteo);
             $entityManager->flush();
+
+            
 
             return $this->redirectToRoute('app_sorteo_index', [], Response::HTTP_SEE_OTHER);
         }

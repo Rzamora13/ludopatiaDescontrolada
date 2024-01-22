@@ -39,6 +39,30 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
+    /**
+    * @return User[] Returns an array of User objects
+    */
+   public function getMaxSaldoUser(): array
+   {
+       return $this->createQueryBuilder('u')
+           ->orderBy('u.saldo', 'DESC')
+           ->setMaxResults(10)
+           ->getQuery()
+           ->getResult()
+       ;
+   }
+
+   public function findUsernameById(int $userId): ?string
+    {
+        $qb = $this->createQueryBuilder('u')
+            ->select('u.username')
+            ->where('u.id = :userId')
+            ->setParameter('userId', $userId)
+            ->getQuery();
+
+        return $qb->getOneOrNullResult(\Doctrine\ORM\Query::HYDRATE_SINGLE_SCALAR);
+    }
+
 //    /**
 //     * @return User[] Returns an array of User objects
 //     */

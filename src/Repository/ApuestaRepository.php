@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Apuesta;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -20,6 +21,38 @@ class ApuestaRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Apuesta::class);
     }
+
+    public function getMaxTotalApuestas(): ?int
+{
+    $qb = $this->createQueryBuilder('a')
+        ->select('IDENTITY(a.user) as userId')
+        ->groupBy('a.user')
+        ->orderBy('COUNT(a.id)', 'DESC')
+        ->setMaxResults(1);
+
+    $result = $qb->getQuery()->getOneOrNullResult();
+
+    return $result['userId'] ?? null;
+}
+
+    
+   /**
+    * @return Apuesta[] Returns an array of Apuesta objects
+    */
+   public function getAvailableTickets($sorteoId): array
+   {
+       return $this->createQueryBuilder('a')
+           ->andWhere('a.sorteo = :val AND a.user IS NULL')
+           ->setParameter('val', $sorteoId)
+           ->orderBy('a.id', 'DESC')
+           ->getQuery()
+           ->getResult()
+       ;
+   }
+    
+
+    
+
 
 //    /**
 //     * @return Apuesta[] Returns an array of Apuesta objects

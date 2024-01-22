@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ticket
+{% endblock %}
+
+{% block body %}
+	<h1>Tickets Disponibles</h1>
+
+
+	{{ dump(ticketsDisponibles) }}
+	{% for ticket in ticketsDisponibles %}
+		{{ ticket.id }}
+		<button>Comprar</button>
+		<br>
+	{% endfor %}
+
+	<a href="{{ path('app_sorteo_index') }}">Volver a sorteos</a>
+{% endblock %}
